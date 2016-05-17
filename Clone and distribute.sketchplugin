@@ -1,0 +1,79 @@
+// Create a circle with objects
+(function() {
+
+  function createAlert() {
+
+    var alert = COSAlertWindow.new();
+
+    function createTextFieldWithLavel(label,defaultValue) {
+        alert.addTextLabelWithValue(label);
+        alert.addTextFieldWithValue(defaultValue);
+    }
+
+    alert.setMessageText("Clone objects and randomize position");
+    alert.setInformativeText("This tool takes the current selection, copies it a specified number of times and randomize position.");
+
+    createTextFieldWithLavel("Number of elements:","50");
+    createTextFieldWithLavel("Width","300");
+    createTextFieldWithLavel("Height","1200");
+
+    // Actions buttons.
+    alert.addButtonWithTitle('OK');
+    alert.addButtonWithTitle('Cancel');
+
+    return alert;
+  }
+
+
+  function handleAlertResponse(alert, responseCode) {
+      if (responseCode == "1000") {
+          function valAtIndex (view, index) {
+              return parseInt(view.viewAtIndex(index).stringValue());
+          }
+
+          return {
+              number: valAtIndex(alert,1),
+              width: valAtIndex(alert,3),
+              height: valAtIndex(alert,5)
+          }
+      }
+
+      return null;
+  }
+
+  var alert=createAlert();
+
+  var options=handleAlertResponse(alert,alert.runModal());
+
+  if(options==null) {
+      return;
+  }
+
+  number=options.number;
+  width=options.width;
+  height=options.height;
+
+  for(var i=0; i < number; i++){
+
+    var s = selection[0]
+    var copy = [s duplicate]
+    var frame = [copy frame]
+
+    var rot = (Math.random() * 20 - 10)
+
+    var oldWidth = [frame width]
+    var oldHeight = [frame height]
+
+    var randomScale = 0.75 + Math.random() * 0.5
+
+    [copy setRotation: rot]
+
+    [frame setWidth: oldWidth * randomScale]
+    [frame setHeight: oldHeight * randomScale]
+    [frame setX:([frame x] + oldWidth * 3 + width * Math.random())]
+    [frame setY:([frame y] + height / number * i)]
+    [[[copy style] contextSettings] setOpacity: 0.5 + Math.random() * 0.25]
+
+  }
+
+}())
